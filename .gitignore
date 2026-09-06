@@ -1,0 +1,46 @@
+# === Secrets — NEVER commit ===
+.env
+client_secret.json
+token.json
+*.pem
+*.key
+
+# === Generated content (per-plugin) ===
+plugins/*/pending/
+plugins/*/published/
+plugins/*/output/
+plugins/*/drafts/
+
+# === Trackers (runtime state) ===
+trackers/*.json
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+ENV/
+.python-version
+
+# === IDE / Editor ===
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# === Logs / temp ===
+*.log
+log.txt
+*.tmp
+tmp/
+
+# === OS / misc ===
+.directory
+.Trash-*
