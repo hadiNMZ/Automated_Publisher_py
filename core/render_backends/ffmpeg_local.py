@@ -15,7 +15,7 @@ def _escape(text: str) -> str:
 
 
 def _run_ffmpeg(cmd: list[str]) -> None:
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    result = subprocess.run(cmd, capture_output=True, text=True, stdin=subprocess.DEVNULL)
     if result.returncode != 0:
         raise RuntimeError(
             f"ffmpeg failed (exit {result.returncode}).\n"

@@ -6,7 +6,7 @@ and/or Arabic), so it works for every language plugin without changes.
 from pathlib import Path
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
-from google_auth import get_credentials
+from google_auth import get_youtube_credentials
 from config_base import YOUTUBE_CATEGORY_ID
 
 
@@ -41,7 +41,7 @@ def _build_metadata(plugin_name: str, phrase_data: dict) -> dict:
 
 
 def upload_to_youtube(video_path: Path, plugin_name: str, phrase_data: dict) -> str:
-    creds = get_credentials()
+    creds = get_youtube_credentials()
     service = build("youtube", "v3", credentials=creds)
 
     body = _build_metadata(plugin_name, phrase_data)
