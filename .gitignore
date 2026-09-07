@@ -1,9 +1,13 @@
 # === Secrets — NEVER commit ===
 .env
+.env.local
+.env.*.local
 client_secret.json
 token.json
+token_*.json
 *.pem
 *.key
+*.crt
 
 # === Generated content (per-plugin) ===
 plugins/*/pending/
