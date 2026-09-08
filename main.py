@@ -16,8 +16,7 @@ sys.path.insert(0, str(ROOT_DIR / "core"))
 from pipeline import run_plugin
 
 PLUGINS_DIR = ROOT_DIR / "plugins/"
-ACTIVE_PLUGINS = ["czech" , "spanish", "german", "english", "french"]
-
+ACTIVE_PLUGINS = ["german", "english", "french", "czech" , "spanish"]
 
 def _load_plugin_config(plugin_dir: Path):
     """Loads a plugin's config.py as its own module (each plugin's file
