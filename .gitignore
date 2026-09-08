@@ -49,6 +49,12 @@ tmp/
 .directory
 .Trash-*
 
+*.mp3
+*.mp4
+*.m4a
+*.png
+*.jpg
+
 
 
 

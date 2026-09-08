@@ -1,4 +1,4 @@
-"""German plugin: target language German, translated to English + Arabic."""
+"""German plugin: target German, translated to Arabic only."""
 from pathlib import Path
 import sys
 
@@ -10,7 +10,7 @@ from language_common import get_theme
 
 NAME = "german"
 LANGUAGE_NAME = "German"
-INCLUDE_ENGLISH = True
+INCLUDE_ENGLISH = False
 INCLUDE_ARABIC = True
 
 TTS_PROVIDER = "google"
@@ -23,6 +23,7 @@ PUBLISHED_DIR.mkdir(exist_ok=True)
 
 FONT_BOLD = str(PLUGIN_DIR / "assets" / "Inter-Bold.ttf")
 FONT_REGULAR = str(PLUGIN_DIR / "assets" / "Inter-Regular.ttf")
+FONT_ARABIC = str(PLUGIN_DIR.parent.parent / "assets" / "fonts" / "NotoSansArabic-Regular.ttf")
 
 
 def generate_content(weekday: int, used_words: list[str]) -> dict:

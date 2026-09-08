@@ -1,0 +1,31 @@
+"""Czech plugin: target Czech, translated to Arabic only."""
+from pathlib import Path
+import sys
+
+PLUGIN_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(PLUGIN_DIR.parent.parent / "core"))
+
+from phrase_providers import generate_phrase
+from language_common import get_theme
+
+NAME = "czech"
+LANGUAGE_NAME = "Czech"
+INCLUDE_ENGLISH = False
+INCLUDE_ARABIC = True
+
+TTS_PROVIDER = "google"
+TTS_LANG_OR_VOICE = "cs"
+
+PENDING_DIR = PLUGIN_DIR / "pending"
+PUBLISHED_DIR = PLUGIN_DIR / "published"
+PENDING_DIR.mkdir(exist_ok=True)
+PUBLISHED_DIR.mkdir(exist_ok=True)
+
+FONT_BOLD = str(PLUGIN_DIR / "assets" / "Inter-Bold.ttf")
+FONT_REGULAR = str(PLUGIN_DIR / "assets" / "Inter-Regular.ttf")
+FONT_ARABIC = str(PLUGIN_DIR.parent.parent / "assets" / "fonts" / "NotoSansArabic-Regular.ttf")
+
+def generate_content(weekday: int, used_words: list[str]) -> dict:
+    theme = get_theme(weekday)
+    return generate_phrase(LANGUAGE_NAME, weekday, theme, used_words,
+                            INCLUDE_ENGLISH, INCLUDE_ARABIC)

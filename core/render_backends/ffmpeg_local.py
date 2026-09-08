@@ -1,9 +1,6 @@
 """
-Local ffmpeg rendering — the "for testing" backend. Takes generic text
-lines (not hardcoded to German) so any language plugin can use it.
-Requires ffmpeg installed and on PATH (or FFMPEG_BINARY pointing at a
-working build — see README if you hit a "No such filter: drawtext"
-error, which means your system ffmpeg is broken/mismatched).
+Legacy single-slide drawtext renderer — does NOT support multi-slide or Arabic.
+Kept for backwards compat. Use pillow_overlay for the full feature set.
 """
 import subprocess
 from pathlib import Path
@@ -23,38 +20,49 @@ def _run_ffmpeg(cmd: list[str]) -> None:
         )
 
 
-def render(text_lines: list[str], audio_path: Path, output_path: Path,
-           font_bold: str, font_regular: str, duration: int = 8) -> Path:
+def render(slides: list[dict], audio_path: Path, output_path: Path,
+           font_bold: str, font_regular: str, font_arabic: str = "",
+           duration: float = 30) -> Path:
     """
-    text_lines: list of strings to stack vertically, largest/first line
-    styled bold, the rest regular. Typically [word, translation(s),
-    example]. Caller decides what goes in — this module just lays them
-    out.
+    Legacy fallback — renders only the first slide as a single image.
+    Does NOT support crossfade, multi-slide, or Arabic text.
+    Use RENDER_BACKEND=pillow_overlay for full features.
     """
-    for font_path in (font_bold, font_regular):
-        if not Path(font_path).exists():
-            raise FileNotFoundError(f"Font file not found: {font_path}")
+    import warnings
+    warnings.warn(
+        "ffmpeg_local does not support multi-slide rendering or Arabic text. "
+        "Set RENDER_BACKEND=pillow_overlay in .env for full features.",
+        UserWarning
+    )
+
+    # Just render the first slide as a single video
+    first_slide = slides[0] if slides else {"render_plan": [], "duration": duration}
+    plan = first_slide.get("render_plan", [])
+    slide_dur = first_slide.get("duration", duration)
 
     filters = []
-    y = 550
-    for i, line in enumerate(text_lines):
-        font = font_bold if i == 0 else font_regular
-        size = 90 if i == 0 else (55 if i == 1 else 40)
-        color = "white" if i != 1 else "0xcccccc"
+    y = 100
+    for item in plan:
+        text = item.get("text", "")
+        if not text:
+            continue
+        font = font_bold if item.get("type") in ("main", "section_header") else font_regular
+        size = 50 if item.get("type") == "main" else 35
+        color = "white" if item.get("type") != "arabic" else "0xc8dcff"
         filters.append(
-            f"drawtext=fontfile={font}:text='{_escape(line)}':fontcolor={color}:"
+            f"drawtext=fontfile={font}:text='{_escape(text)}':fontcolor={color}:"
             f"fontsize={size}:x=(w-text_w)/2:y={y}"
         )
-        y += 150
+        y += 80
 
-    vf = ",".join(filters)
+    vf = ",".join(filters) if filters else "null"
     background_path = output_path.parent / "background.mp4"
 
     _run_ffmpeg([
         FFMPEG_BINARY, "-y",
-        "-f", "lavfi", "-i", f"color=c=0x1e1e2f:s=1080x1920:d={duration}",
+        "-f", "lavfi", "-i", f"color=c=0x1e1e2f:s=1080x1920:d={slide_dur}",
         "-vf", vf,
-        "-c:v", "libx264", "-t", str(duration),
+        "-c:v", "libx264", "-t", str(slide_dur),
         str(background_path),
     ])
 
